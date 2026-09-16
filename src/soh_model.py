@@ -44,32 +44,33 @@ def train_soh_model(features_df):
     }
     
     # Generate and save Plot
+    plt.style.use('dark_background')
     os.makedirs('figures', exist_ok=True)
     plt.figure(figsize=(8, 6))
     
     # Sort for cleaner line plotting if treating as a timeseries, 
     # but since it's a scatter plot, we just plot Pred vs Actual.
-    plt.scatter(y_test, rf_preds, alpha=0.7, color='#028090', label='RF Predictions', edgecolor='w')
+    plt.scatter(y_test, rf_preds, alpha=0.7, color='#00ffc8', label='RF Predictions', edgecolor='none')
     
     # Perfect prediction line
     min_val = min(y_test.min(), rf_preds.min())
     max_val = max(y_test.max(), rf_preds.max())
-    plt.plot([min_val, max_val], [min_val, max_val], 'r--', label='Perfect Fit')
+    plt.plot([min_val, max_val], [min_val, max_val], '--', color='#ff4d4d', label='Perfect Fit')
     
     plt.title('Predicted vs Reference SoH (Random Forest)')
     plt.xlabel('Reference SoH (Capacity based)')
     plt.ylabel('Predicted SoH')
     plt.legend()
-    plt.grid(True, linestyle=':', alpha=0.6)
+    plt.grid(True, color='#222222', linestyle=':')
     
     plt.text(min_val + 0.05*(max_val-min_val), max_val - 0.1*(max_val-min_val),
              f"MAE:  {metrics['RF_MAE']:.4f}\n"
              f"RMSE: {metrics['RF_RMSE']:.4f}\n"
              f"R²:   {metrics['RF_R2']:.4f}",
-             bbox=dict(facecolor='white', alpha=0.8, edgecolor='#0B2E33'))
+             bbox=dict(facecolor='#111111', alpha=0.9, edgecolor='#00ffc8'))
              
     plt.tight_layout()
-    plt.savefig('figures/predicted_vs_reference_soh.png', dpi=300)
+    plt.savefig('figures/predicted_vs_reference_soh.png', dpi=300, facecolor='#0a0e17')
     plt.close()
     
     return rf, metrics

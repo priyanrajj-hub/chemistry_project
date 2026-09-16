@@ -16,29 +16,47 @@ from feature_engineering import extract_features
 from soh_model import train_soh_model
 from abnormality_detector import simulate_safe_proxy_faults, train_abnormality_detector
 
+import json
+
 def plot_nyquist_bode(frequencies, profiles):
     """Generate and save standard EIS visualizations."""
     os.makedirs('figures', exist_ok=True)
     
+    # Use dark background for premium website look
+    plt.style.use('dark_background')
+    
+    # Dump data for the 3D Plotly integration
+    json_data = {'frequencies': frequencies.tolist(), 'series': {}}
+    
     # 1. Nyquist Plot
     plt.figure(figsize=(8, 6))
-    colors = {'Fresh': '#00A896', 'Mid-life': '#028090', 'Aged': '#0B2E33'}
+    colors = {'Fresh': '#00ffc8', 'Mid-life': '#028090', 'Aged': '#ff4d4d'}
     
     for state, Z in profiles.items():
         # Extracted via software DFT pipeline to prove it works
         Z_est = sweep_frequencies(frequencies, Z, sampling_rate=860)
-        plt.plot(np.real(Z_est), -np.imag(Z_est), 'o-', markersize=4, label=f"{state} (Simulated 860 SPS)", color=colors[state])
+        plt.plot(np.real(Z_est), -np.imag(Z_est), 'o-', markersize=4, label=f"{state}", color=colors[state])
         
-    plt.title('Nyquist Plot of Battery Aging (Simulated ESP32+ADS1115 Pipeline)')
+        # Save to json dict for JS
+        json_data['series'][state] = {
+            'z_real': np.real(Z_est).tolist(),
+            'z_imag': (-np.imag(Z_est)).tolist() # negate imag for standard Nyquist convention
+        }
+        
+    # Write json data
+    with open('nyquist_data.json', 'w') as f:
+        json.dump(json_data, f)
+        
+    plt.title('Nyquist Plot of Battery Aging')
     plt.xlabel("Z' (\u03A9)")
     plt.ylabel("-Z'' (\u03A9)")
     plt.legend()
-    plt.grid(True, linestyle=':', alpha=0.6)
+    plt.grid(True, color='#222222', linestyle=':')
     
     # Ensure axes are equal for proper Nyquist representation
     plt.gca().set_aspect('equal', adjustable='box')
     plt.tight_layout()
-    plt.savefig('figures/nyquist_plot.png', dpi=300)
+    plt.savefig('figures/nyquist_plot.png', dpi=300, facecolor='#0a0e17')
     plt.close()
     
     # 2. Bode Plot (Magnitude)
@@ -51,20 +69,20 @@ def plot_nyquist_bode(frequencies, profiles):
     plt.xlabel('Frequency (Hz)')
     plt.ylabel('|Z| (\u03A9)')
     plt.legend()
-    plt.grid(True, linestyle=':', alpha=0.6)
+    plt.grid(True, color='#222222', linestyle=':')
     plt.tight_layout()
-    plt.savefig('figures/bode_magnitude.png', dpi=300)
+    plt.savefig('figures/bode_magnitude.png', dpi=300, facecolor='#0a0e17')
     plt.close()
 
 def plot_capacity_fade(nasa_df):
     plt.figure(figsize=(8, 5))
-    plt.plot(nasa_df['Cycle'], nasa_df['Capacity_Ah'], color='#02C39A', linewidth=2)
+    plt.plot(nasa_df['Cycle'], nasa_df['Capacity_Ah'], color='#00ffc8', linewidth=2)
     plt.title('NASA Li-ion Dataset: Capacity Fade')
     plt.xlabel('Cycle')
     plt.ylabel('Capacity (Ah)')
-    plt.grid(True, linestyle=':', alpha=0.6)
+    plt.grid(True, color='#222222', linestyle=':')
     plt.tight_layout()
-    plt.savefig('figures/capacity_fade.png', dpi=300)
+    plt.savefig('figures/capacity_fade.png', dpi=300, facecolor='#0a0e17')
     plt.close()
 
 def run():
