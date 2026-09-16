@@ -156,45 +156,6 @@ const initHero3D = () => {
 };
 
 
-// ----------------------------------------------------
-// THREE.JS HARDWARE BREAKDOWN
-// ----------------------------------------------------
-const initHardware3D = () => {
-    const container = document.getElementById('hardware-3d-container');
-    if (!container) return;
-
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-    camera.position.set(0, 5, 12);
-    camera.lookAt(0, 0, 0);
-
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(width, height);
-    container.appendChild(renderer.domElement);
-
-    const group = new THREE.Group();
-
-    // helper function to create styled boxes
-    const createMod = (w, h, d, color = 0x00e5ff, labelStr) => {
-        const mat = new THREE.MeshPhongMaterial({
-            color: color,
-            transparent: true,
-            opacity: 0.8,
-            specular: 0xffffff,
-            shininess: 100
-        });
-        const geo = new THREE.BoxGeometry(w, h, d);
-        const mesh = new THREE.Mesh(geo, mat);
-
-        const edges = new THREE.EdgesGeometry(geo);
-        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.5, transparent: true }));
-        mesh.add(line);
-        return mesh;
-    };
-
     // Build the diagram
     const esp32 = createMod(2, 0.5, 3, 0x028090); // ESP32
     esp32.position.set(-3, 0, 0);

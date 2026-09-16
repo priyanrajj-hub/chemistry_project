@@ -114,8 +114,68 @@
                             algorithm mirroring standard lock-in amplifiers to extract Z(f).</li>
                     </ul>
                 </div>
-                <!-- 3D Hardware view -->
-                <div id="hardware-3d-container" class="glass-card gs-reveal" style="height: 400px; padding: 0;"></div>
+                <!-- 2D SVG Schematic Architecture -->
+                <div class="glass-card gs-reveal diagram-card" style="padding: 2rem;">
+                    <div class="schematic-container">
+                        <svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg" class="hw-svg">
+                            <defs>
+                                <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.2" />
+                                    <stop offset="100%" stop-color="#00e5ff" stop-opacity="0" />
+                                </radialGradient>
+                            </defs>
+
+                            <!-- Connecting Lines (Animated) -->
+                            <path class="signal-line" d="M120,60 L240,60" />
+                            <text class="signal-label" x="180" y="50">SPI: freq Cmd ➔</text>
+
+                            <path class="signal-line" d="M340,60 L450,60" />
+                            <text class="signal-label" x="395" y="50">Excitation V(t) ➔</text>
+
+                            <path class="signal-line" d="M500,100 L500,150 L340,150" />
+                            <text class="signal-label" x="420" y="140">➔ Response A(t)</text>
+
+                            <path class="signal-line" d="M240,150 L120,150" />
+                            <text class="signal-label" x="180" y="140">I2C: Data ➔</text>
+
+                            <!-- ESP32 Block -->
+                            <g class="hw-block tooltip-trigger">
+                                <circle cx="70" cy="105" r="50" fill="url(#glow)" />
+                                <rect x="20" y="40" width="100" height="130" rx="4" class="strk-cyan" />
+                                <text x="70" y="100" class="hw-title">ESP32</text>
+                                <text x="70" y="120" class="hw-sub">MCU</text>
+                                <title>ESP32: WiFi-enabled MCU driving the sweep timing & logging to serial</title>
+                            </g>
+
+                            <!-- AD9833 Block -->
+                            <g class="hw-block tooltip-trigger">
+                                <rect x="240" y="20" width="100" height="80" rx="4" class="strk-outline" />
+                                <text x="290" y="55" class="hw-title">AD9833</text>
+                                <text x="290" y="75" class="hw-sub">Gen</text>
+                                <title>AD9833: Programmable Waveform Generator (SPI)</title>
+                            </g>
+
+                            <!-- ADS1115 Block -->
+                            <g class="hw-block tooltip-trigger">
+                                <rect x="240" y="110" width="100" height="80" rx="4" class="strk-outline" />
+                                <text x="290" y="145" class="hw-title">ADS1115</text>
+                                <text x="290" y="165" class="hw-sub">ADC</text>
+                                <title>ADS1115: 16-bit ADC sampling up to 860 SPS (I2C)</title>
+                            </g>
+
+                            <!-- Battery Block -->
+                            <g class="hw-block tooltip-trigger">
+                                <circle cx="500" cy="105" r="40" fill="url(#glow)" />
+                                <rect x="450" y="20" width="100" height="80" rx="8" class="strk-red" />
+                                <text x="500" y="55" class="hw-title" fill="#ff4d4d">Cell</text>
+                                <text x="500" y="75" class="hw-sub" fill="#ff4d4d">DUT</text>
+                                <title>Battery under test/RC proxy circuit</title>
+                            </g>
+                        </svg>
+                    </div>
+                    <p class="diagram-caption">ESP32 commands AD9833 to sweep excitation frequency across the cell;
+                        ADS1115 samples the voltage/current response for DFT-based impedance extraction.</p>
+                </div>
             </div>
         </div>
     </section>
