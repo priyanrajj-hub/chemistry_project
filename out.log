@@ -1,0 +1,11 @@
+--- Low-Cost EIS Pipeline Execution ---
+1. Running DFT extractions and generating Nyquist/Bode plots...
+2. Generating baseline dataset and simulating Hardware Feature Extraction...
+Traceback (most recent call last):
+  File "C:\Users\PRIYANRAJ J\.gemini\antigravity\scratch\low-cost-eis-liion-soh\src\pipeline.py", line 119, in <module>
+    run()
+    ~~~^^
+  File "C:\Users\PRIYANRAJ J\.gemini\antigravity\scratch\low-cost-eis-liion-soh\src\pipeline.py", line 100, in run
+    features_df = pd.DataFrame(extracted_features_list)
+                  ^^
+NameError: name 'pd' is not defined. Did you mean: 'id'?
