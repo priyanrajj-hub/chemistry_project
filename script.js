@@ -40,7 +40,7 @@ gsap.utils.toArray('.gs-reveal').forEach(function (elem) {
 });
 
 // Number Counter Animation
-const formatNum = (num, isFloat) => isFloat ? num.toFixed(2) : Math.floor(num);
+const formatNum = (num, isFloat) => isFloat ? parseFloat(num).toFixed(2) : Math.floor(parseFloat(num));
 gsap.utils.toArray('.counter').forEach(function (counter) {
     const target = parseFloat(counter.getAttribute('data-target'));
     const isFloat = target % 1 !== 0;
@@ -55,7 +55,8 @@ gsap.utils.toArray('.counter').forEach(function (counter) {
                 ease: "power2.out",
                 snap: { innerHTML: isFloat ? 0.01 : 1 },
                 onUpdate: function () {
-                    counter.innerHTML = formatNum(this.targets()[0].innerHTML, isFloat);
+                    const val = this.targets()[0].innerHTML;
+                    counter.innerHTML = formatNum(val, isFloat);
                 }
             });
         },
