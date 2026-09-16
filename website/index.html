@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low-Cost EIS | Battery SoH Estimation</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav>
+        <div class="nav-content">
+            <div class="logo">Low-Cost EIS</div>
+            <ul>
+                <li><a href="#problem">Problem</a></li>
+                <li><a href="#novelty">Novelty</a></li>
+                <li><a href="#hardware">Hardware</a></li>
+                <li><a href="#results">Results</a></li>
+                <li><a href="#safety">Safety</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1>Electrochemical Impedance Spectroscopy for All</h1>
+            <p class="tagline">Data-driven battery analytics without the multi-million dollar laboratory. An accessible engineering implementation of EIS-based State-of-Health estimation.</p>
+            
+            <div class="badges">
+                <span class="badge">SAFE</span>
+                <span class="badge">SUSTAINABLE</span>
+                <span class="badge">&lt; ₹2,500 ($30)</span>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="https://github.com/PriyanrajJ/low-cost-eis-liion-soh" class="btn btn-primary">View on GitHub</a>
+                <a href="#results" class="btn btn-outline">See the Data</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="problem">
+        <div class="container">
+            <h2 class="section-title">The Problem</h2>
+            <div class="grid-4">
+                <div class="card">
+                    <div class="icon">1</div>
+                    <h3>Invisible Degradation</h3>
+                    <p>Lithium-ion batteries degrade both electrically and chemically in ways totally invisible to standard voltage checks.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">2</div>
+                    <h3>Safety Margin Shrink</h3>
+                    <p>Internal shorts and charge-transfer issues can build up silently, risking sudden failure.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">3</div>
+                    <h3>EIS Adds Info</h3>
+                    <p>EIS is a proven method to see inside the cell. It injects AC signals to plot complex impedance signatures over varying frequencies.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">4</div>
+                    <h3>The $10K Barrier</h3>
+                    <p>Commercial EIS potentiostats cost between $5,000 and $20,000, making them completely inaccessible for student and low-resource environments.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="novelty" style="background-color: var(--light);">
+        <div class="container">
+            <h2 class="section-title">Research Gap & Novelty</h2>
+            
+            <div class="compare-container">
+                <div class="compare-header">
+                    <div>The Established Science</div>
+                    <div>Our Contribution</div>
+                </div>
+                <div class="compare-row">
+                    <div>ML applied to EIS correlates strongly to cycled capacity fade and remaining useful life.</div>
+                    <div><strong>Accessibility.</strong> Replacing expensive lock-in amplifiers with a $30 single-bin software DFT pipeline mimicking standard EIS outputs.</div>
+                </div>
+                <div class="compare-row">
+                    <div>Most literature relies upon extremely smooth, broadband spectra (>1 kHz) to track ohmic shifts.</div>
+                    <div><strong>Low-Frequency focus.</strong> Admitting the hardware limitation (860 SPS) and relying entirely on robust low-frequency proxy features like R_polarization and |Z|.</div>
+                </div>
+                <div class="compare-row">
+                    <div>Abnormality detection typically relies on inducing destructive thermal runaway in a lab.</div>
+                    <div><strong>100% Non-destructive.</strong> Using external parallel RC-proxy circuits to emulate the specific impedance drop of a dendrite growth without any risk.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="hardware">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="grid-2">
+                <div>
+                    <h3 style="margin-bottom:1rem;color:var(--primary);">1. Hardware Architecture</h3>
+                    <ul class="lit-list" style="margin-bottom:2rem;">
+                        <li><strong>ESP32:</strong> WiFi-enabled brain, directing the frequency sweeps.</li>
+                        <li><strong>AD9833 Module:</strong> Generates the precise sine-wave excitation signal.</li>
+                        <li><strong>ADS1115:</strong> 16-bit ADC reading the current and voltage at max 860 Samples Per Second.</li>
+                    </ul>
+                    
+                    <h3 style="margin-bottom:1rem;color:var(--primary);">2. Budget</h3>
+                    <p>Total Estimated Bill of Materials for this setup amounts to roughly <strong>₹2,440</strong>. Feasibility rests entirely on executing software logic effectively instead of relying on pure hardware filters.</p>
+                </div>
+                <div>
+                     <h3 style="margin-bottom:1rem;color:var(--primary);">3. Feature & ML Pipeline</h3>
+                     <p style="margin-bottom: 1rem;">
+                        <code>Raw V/I</code> ➝ <code>DFT</code> ➝ <code>Z(f)</code> ➝ <code>Features (R0, Rct)</code> ➝ <code>Random Forest SoH ML</code>
+                     </p>
+                     <p>Instead of heavy iterative CNLS fitting over a Randles circuit, we directly extract macro-level features like $R_{ohm\_est}$ and $Phase_{10Hz}$ and pipe them directly into a Random Forest Regressor trained on real NASA degradation data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="results" style="background-color: var(--light);">
+        <div class="container">
+            <h2 class="section-title">Live Pipeline Results</h2>
+            <p style="text-align:center; max-width: 800px; margin: 0 auto 3rem;">
+                These visuals are generated directly from the repository's end-to-end Python pipeline, which simulates the hardware constraints against the NASA Li-ion Battery Aging Dataset.
+            </p>
+            
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <img src="../figures/nyquist_plot.png" alt="Generated Nyquist Plot">
+                    <p>Simulated 860 SPS Extraction over Battery Aging</p>
+                </div>
+                <div class="chart-card">
+                    <img src="../figures/bode_magnitude.png" alt="Generated Bode Plot">
+                    <p>Shift in |Z| over Frequencies</p>
+                </div>
+            </div>
+            
+            <div class="charts-grid" style="margin-top:2rem;">
+                <div class="chart-card">
+                    <img src="../figures/capacity_fade.png" alt="NASA Capacity Fade">
+                    <p>NASA PCoE Dataset Capacity Degradation Baseline</p>
+                </div>
+                <div class="chart-card">
+                    <img src="../figures/predicted_vs_reference_soh.png" alt="Predicted vs Reference SoH">
+                    <p>RF Test Set Accuracy (MAE ~ 0.05, R² ~ 0.94)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="safety">
+        <div class="container grid-2">
+            <div>
+                <h2 style="color:var(--dark);">Safety & Sustainability</h2>
+                <p style="margin-bottom:1rem;"><strong>Zero destructive testing.</strong> We do not deliberately fail or damage live Li-ion cells. Artificial fault emulation is done via external proxy circuits.</p>
+                <p>We rely on standard, reusable microcontroller modules and RoHS-leaning components to minimize the toxic footprint, ensuring completely safe deployment in a university lab environment.</p>
+            </div>
+            <div>
+                <h2 style="color:var(--dark);">Honest Limitations</h2>
+                <p style="margin-bottom:1rem;">This is an extreme low-cost apparatus. It cannot match the sub-3% error broadband capabilities of precision desktop analyzers.</p>
+                <p>The 860 SPS limit makes it exclusively a low-frequency demonstrator. Contact resistance from breadboard wiring (lacking a proper 4-wire Kelvin harness) induces artificial ohmic errors that the ML model attempts to smooth over.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section id="references" style="background-color: var(--light);">
+        <div class="container">
+            <h2 class="section-title">Selected References</h2>
+            <ul class="lit-list">
+                <li>Severson et al., <em>Nature Communications</em> (2020) — Data-driven prediction of battery cycle life before capacity degradation.</li>
+                <li>Li et al., <em>Journal of Energy Storage</em> (2020) — ECM + ANN integration for rapid SOH evaluations.</li>
+                <li>Schindler et al., <em>Journal of Power Sources</em> (2021) — Identifiable aging signatures in Li-ion cells via EIS.</li>
+                <li>Wang et al., <em>Electrochimica Acta</em> (2025) — Early ISC Detection utilizing reduced RF proxy models.</li>
+                <li>NASA PCoE Li-ion Battery Aging Dataset.</li>
+            </ul>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container" style="padding: 1rem 0;">
+            <p><strong>Low-Cost EIS for Li-Ion Battery State-of-Health Estimation</strong></p>
+            <p>Built for Engineering Education & Research | MIT License</p>
+            <p style="margin-top: 1rem;"><a href="https://github.com/PriyanrajJ/low-cost-eis-liion-soh">Project GitHub Repository</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>
