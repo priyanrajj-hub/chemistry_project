@@ -156,43 +156,7 @@ const initHero3D = () => {
 };
 
 
-    // Build the diagram
-    const esp32 = createMod(2, 0.5, 3, 0x028090); // ESP32
-    esp32.position.set(-3, 0, 0);
 
-    const ad9833 = createMod(1.5, 0.3, 1.5, 0x00e5ff); // Signal Gen
-    ad9833.position.set(0, 0, -1.5);
-
-    const ads1115 = createMod(1.5, 0.3, 1.5, 0x00A896); // ADC
-    ads1115.position.set(0, 0, 1.5);
-
-    const battery = createMod(1.5, 2.5, 1.5, 0xff4d4d); // Battery cell
-    battery.position.set(3, 0, 0);
-
-    group.add(esp32, ad9833, ads1115, battery);
-    scene.add(group);
-
-    // Lights
-    scene.add(new THREE.AmbientLight(0x404040));
-    const pl = new THREE.PointLight(0xffffff, 1, 100);
-    pl.position.set(5, 5, 5);
-    scene.add(pl);
-
-    const animate = () => {
-        requestAnimationFrame(animate);
-        group.rotation.y += 0.005;
-        renderer.render(scene, camera);
-    };
-    animate();
-
-    window.addEventListener('resize', () => {
-        const w = container.clientWidth;
-        const h = container.clientHeight;
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-        renderer.setSize(w, h);
-    });
-};
 
 // ----------------------------------------------------
 // PLOTLY 3D INTERACTIVE NYQUIST
@@ -258,17 +222,8 @@ const initPlotlyNyquist = async () => {
 document.addEventListener("DOMContentLoaded", () => {
     initHero3D();
 
-    // Intersection observer for lazy loading the next 3D scenes
-    let hardwareLoaded = false;
+    // Intersection observer for lazy loading the Plotly chart
     let plotlyLoaded = false;
-
-    const hwObserver = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting && !hardwareLoaded) {
-            initHardware3D();
-            hardwareLoaded = true;
-        }
-    });
-    hwObserver.observe(document.getElementById('hardware'));
 
     const plotObserver = new IntersectionObserver(entries => {
         if (entries[0].isIntersecting && !plotlyLoaded) {
@@ -278,3 +233,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     plotObserver.observe(document.getElementById('results'));
 });
+
